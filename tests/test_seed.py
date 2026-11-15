@@ -1,7 +1,7 @@
 from sqlalchemy import func, select
 
-from blog_api.models import Comment, Post, Tag, User, UserRole
-from blog_api.seed import COMMENTS, POSTS, USERS, seed
+from api.models import Comment, Post, Tag, User, UserRole
+from api.seed import COMMENTS, POSTS, USERS, seed
 
 
 async def test_seed_inserts_starter_data(session):

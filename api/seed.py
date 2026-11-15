@@ -5,8 +5,8 @@ import asyncio
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from blog_api.db import SessionLocal, engine
-from blog_api.models import Comment, Post, Tag, User, UserRole
+from api.db import SessionLocal, engine
+from api.models import Comment, Post, Tag, User, UserRole
 
 USERS = [
     ("olivia", "Olivia Owner", UserRole.OWNER),

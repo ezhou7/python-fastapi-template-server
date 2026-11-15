@@ -7,10 +7,10 @@ from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from blog_api.config import settings
-from blog_api.db import SessionLocal, engine
-from blog_api.main import app
-from blog_api.models import Base, User, UserRole
+from api.config import settings
+from api.db import SessionLocal, engine
+from api.main import app
+from api.models import Base, User, UserRole
 
 MakeUser = Callable[..., Awaitable[User]]
 

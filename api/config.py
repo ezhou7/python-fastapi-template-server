@@ -6,7 +6,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = "postgresql+asyncpg://blog:blog@localhost:5432/blog"
+    database_url: str = "postgresql+asyncpg://app:app@localhost:5432/app"
     db_echo: bool = False
 
 

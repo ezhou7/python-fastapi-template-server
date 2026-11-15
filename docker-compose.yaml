@@ -1,18 +1,16 @@
-name: blog-api
-
 services:
   db:
     image: postgres:17
     environment:
-      POSTGRES_USER: blog
-      POSTGRES_PASSWORD: blog
-      POSTGRES_DB: blog
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U blog -d blog"]
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
       interval: 2s
       timeout: 5s
       retries: 15

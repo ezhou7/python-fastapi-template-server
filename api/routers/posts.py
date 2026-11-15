@@ -7,9 +7,9 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from blog_api.db import get_session
-from blog_api.models import Post, Tag, User, UserRole
-from blog_api.schemas import PostCreate, PostRead, PostUpdate
+from api.db import get_session
+from api.models import Post, Tag, User, UserRole
+from api.schemas import PostCreate, PostRead, PostUpdate
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 

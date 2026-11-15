@@ -1,8 +1,8 @@
 .PHONY: install db-up db-down migrate migration seed server test
 
-TEST_DATABASE_URL := postgresql+asyncpg://blog:blog@localhost:5432/blog_test
+TEST_DATABASE_URL := postgresql+asyncpg://app:app@localhost:5432/app_test
 # -T: no TTY, so these also work from scripts and agents.
-PSQL := docker compose exec -T db psql -U blog -d blog -v ON_ERROR_STOP=1
+PSQL := docker compose exec -T db psql -U app -d app -v ON_ERROR_STOP=1
 
 # Install dependencies into .venv
 install:
@@ -26,15 +26,15 @@ migration:
 
 # Insert starter data (does nothing if users already exist)
 seed:
-	poetry run python -m blog_api.seed
+	poetry run python -m api.seed
 
 # Apply migrations, then run the dev server with auto-reload on :8000
 server: migrate
-	poetry run uvicorn blog_api.main:app --reload
+	poetry run uvicorn api.main:app --reload
 
-# Recreate the blog_test database, migrate it, and run the tests against it
+# Recreate the app_test database, migrate it, and run the tests against it
 test:
-	$(PSQL) -c "DROP DATABASE IF EXISTS blog_test WITH (FORCE)"
-	$(PSQL) -c "CREATE DATABASE blog_test"
+	$(PSQL) -c "DROP DATABASE IF EXISTS app_test WITH (FORCE)"
+	$(PSQL) -c "CREATE DATABASE app_test"
 	DATABASE_URL=$(TEST_DATABASE_URL) poetry run alembic upgrade head
 	DATABASE_URL=$(TEST_DATABASE_URL) poetry run pytest

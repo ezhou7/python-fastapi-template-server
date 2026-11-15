@@ -1,6 +1,6 @@
-# Blog API
+# FastAPI + Postgres Template Server
 
-A barebones FastAPI + Postgres template server for a blog. There's no frontend. The API has endpoints for posts only. Users, comments and tags exist in the database, ready for more endpoints later.
+A barebones FastAPI + Postgres template server. The example domain is a blog. There's no frontend. The API has endpoints for posts only. Users, comments and tags exist in the database, ready for more endpoints later.
 
 ## Requirements
 
@@ -37,7 +37,7 @@ Interactive API docs: http://localhost:8000/docs
 Example (the seeded blogger is `bella`):
 
 ```bash
-AUTHOR=$(docker compose exec -T db psql -U blog -d blog -tAc "select id from users where username='bella'")
+AUTHOR=$(docker compose exec -T db psql -U app -d app -tAc "select id from users where username='bella'")
 curl -X POST localhost:8000/posts -H 'content-type: application/json' \
   -d "{\"author_id\": \"$AUTHOR\", \"title\": \"Hello\", \"body\": \"First post\", \"tags\": [\"intro\"]}"
 ```
@@ -47,7 +47,7 @@ curl -X POST localhost:8000/posts -H 'content-type: application/json' \
 | Table | What it holds |
 |---|---|
 | `users` | Everyone, bloggers included. `role` is one of `admin`, `owner`, `blogger`, `poster` (comments only), `lurker` (reads only) |
-| `posts` | Blog posts. `author_id` points to `users` |
+| `posts` | Posts. `author_id` points to `users` |
 | `comments` | Comments. `post_id` points to `posts` and `user_id` to `users` |
 | `tags` | Each tag name, once |
 | `tag_post` | Which post has which tag |
@@ -60,12 +60,12 @@ Settings are read from environment variables, or from a `.env` file in the proje
 
 | Variable | Default |
 |---|---|
-| `DATABASE_URL` | `postgresql+asyncpg://blog:blog@localhost:5432/blog` |
+| `DATABASE_URL` | `postgresql+asyncpg://app:app@localhost:5432/app` |
 | `DB_ECHO` | `false` (set `true` to log every SQL statement) |
 
 ## Changing the schema
 
-1. Edit `blog_api/models.py`.
+1. Edit `api/models.py`.
 2. `make migration msg="describe the change"` generates a file in `migrations/versions/`. Review it.
 3. `make migrate` applies it.
 
@@ -75,7 +75,7 @@ Settings are read from environment variables, or from a `.env` file in the proje
 make test
 ```
 
-This recreates a separate `blog_test` database, migrates it, and runs pytest against it. Tests refuse to run against any database whose name doesn't end in `_test`.
+This recreates a separate `app_test` database, migrates it, and runs pytest against it. Tests refuse to run against any database whose name doesn't end in `_test`.
 
 ## Make targets
 
@@ -87,12 +87,12 @@ This recreates a separate `blog_test` database, migrates it, and runs pytest aga
 | `migration msg="..."` | Generate a migration from model changes |
 | `seed` | Add starter data (does nothing if users already exist) |
 | `server` | Migrate, then run the dev server |
-| `test` | Run the tests against a fresh `blog_test` database |
+| `test` | Run the tests against a fresh `app_test` database |
 
 ## Layout
 
 ```
-blog_api/
+api/
   main.py          FastAPI app
   config.py        settings
   db.py            async engine and per-request session

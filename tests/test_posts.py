@@ -3,7 +3,7 @@ import uuid
 import pytest
 from sqlalchemy import func, select
 
-from blog_api.models import Comment, Tag, UserRole, tag_post
+from api.models import Comment, Tag, UserRole, tag_post
 
 MISSING_ID = "00000000-0000-0000-0000-000000000000"
 
