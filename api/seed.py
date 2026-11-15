@@ -1,11 +1,9 @@
 """Fill an empty database with starter data. Run with `make seed`."""
 
-import asyncio
-
 from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
-from api.db import SessionLocal, engine
+from api.db import SessionLocal
 from api.models import Comment, Post, Tag, User, UserRole
 
 USERS = [
@@ -45,9 +43,9 @@ COMMENTS = [
 ]
 
 
-async def seed(session: AsyncSession) -> bool:
+def seed(session: Session) -> bool:
     """Insert the starter data. Returns False, changing nothing, if users already exist."""
-    if await session.scalar(select(func.count()).select_from(User)):
+    if session.scalar(select(func.count()).select_from(User)):
         return False
 
     users = {
@@ -62,7 +60,7 @@ async def seed(session: AsyncSession) -> bool:
     tag_names = sorted({name for *_, names in POSTS for name in names})
     tags = {name: Tag(name=name) for name in tag_names}
     session.add_all([*users.values(), *tags.values()])
-    await session.flush()  # assigns user ids
+    session.flush()  # assigns user ids
 
     posts = [
         Post(
@@ -74,20 +72,19 @@ async def seed(session: AsyncSession) -> bool:
         for author, title, body, names in POSTS
     ]
     session.add_all(posts)
-    await session.flush()  # assigns post ids
+    session.flush()  # assigns post ids
 
     session.add_all(
         Comment(post_id=posts[post_index].id, user_id=users[author].id, body=body)
         for author, post_index, body in COMMENTS
     )
-    await session.commit()
+    session.commit()
     return True
 
 
-async def main() -> None:
-    async with SessionLocal() as session:
-        seeded = await seed(session)
-    await engine.dispose()
+def main() -> None:
+    with SessionLocal() as session:
+        seeded = seed(session)
     if seeded:
         print(
             f"Seeded {len(USERS)} users, {len(POSTS)} posts and {len(COMMENTS)} comments."
@@ -97,4 +94,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

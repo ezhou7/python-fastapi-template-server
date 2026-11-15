@@ -109,13 +109,10 @@ class Post(IdTimestampMixin, Base):
     title: Mapped[str] = mapped_column(String(200))
     body: Mapped[str] = mapped_column(Text)
 
-    # lazy="raise": async sessions can't lazy-load, so load tags explicitly
-    # with selectinload. passive_deletes: the database removes tag_post rows.
+    # Loaded on first access. passive_deletes: when a post is deleted, the
+    # database removes its tag_post rows (ON DELETE CASCADE), not the ORM.
     tags: Mapped[list[Tag]] = relationship(
-        secondary=tag_post,
-        order_by=Tag.name,
-        lazy="raise",
-        passive_deletes=True,
+        secondary=tag_post, order_by=Tag.name, passive_deletes=True
     )
 
 

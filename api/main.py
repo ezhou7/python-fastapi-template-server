@@ -1,17 +1,6 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 
-from api.db import engine
 from api.routers import posts
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    yield
-    # Close pooled database connections on shutdown.
-    await engine.dispose()
-
-
-app = FastAPI(title="API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="API", version="0.1.0")
 app.include_router(posts.router)

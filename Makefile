@@ -1,6 +1,6 @@
 .PHONY: install db-up db-down migrate migration seed server test
 
-TEST_DATABASE_URL := postgresql+asyncpg://app:app@localhost:5432/app_test
+TEST_DATABASE_URL := postgresql+psycopg://app:app@localhost:5432/app_test
 # -T: no TTY, so these also work from scripts and agents.
 PSQL := docker compose exec -T db psql -U app -d app -v ON_ERROR_STOP=1
 
