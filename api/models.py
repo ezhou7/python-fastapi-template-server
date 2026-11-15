@@ -31,7 +31,6 @@ class Base(DeclarativeBase):
 
 class UserRole(enum.StrEnum):
     ADMIN = "admin"
-    OWNER = "owner"
     BLOGGER = "blogger"
     POSTER = "poster"  # can write comments, not posts
     LURKER = "lurker"  # reads only

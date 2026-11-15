@@ -30,7 +30,7 @@ Interactive API docs: http://localhost:8000/docs
 | PATCH | `/posts/{id}` | Change any of `title`, `body`, `tags` (`tags` replaces the whole set) |
 | DELETE | `/posts/{id}` | Delete a post, along with its comments and tag links |
 
-- Only users with the role `owner`, `admin` or `blogger` can author posts. Any other author gets a 422.
+- Only users with the role `admin` or `blogger` can author posts. Any other author gets a 422.
 - Tag names are trimmed and lowercased. A tag that doesn't exist yet is created.
 - Status codes: 201 for create, 204 for delete, 404 for an unknown post, 422 for invalid input.
 
@@ -46,7 +46,7 @@ curl -X POST localhost:8000/posts -H 'content-type: application/json' \
 
 | Table | What it holds |
 |---|---|
-| `users` | Everyone, bloggers included. `role` is one of `admin`, `owner`, `blogger`, `poster` (comments only), `lurker` (reads only) |
+| `users` | Everyone, bloggers included. `role` is one of `admin`, `blogger`, `poster` (comments only), `lurker` (reads only) |
 | `posts` | Posts. `author_id` points to `users` |
 | `comments` | Comments. `post_id` points to `posts` and `user_id` to `users` |
 | `tags` | Each tag name, once |

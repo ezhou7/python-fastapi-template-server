@@ -16,7 +16,7 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 # Posters can only comment and lurkers only read, so they can't author posts.
-AUTHOR_ROLES = {UserRole.OWNER, UserRole.ADMIN, UserRole.BLOGGER}
+AUTHOR_ROLES = {UserRole.ADMIN, UserRole.BLOGGER}
 
 
 async def get_post_or_404(session: AsyncSession, post_id: uuid.UUID) -> Post:

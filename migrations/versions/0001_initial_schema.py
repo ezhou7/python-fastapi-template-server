@@ -34,7 +34,7 @@ def upgrade() -> None:
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('display_name', sa.String(length=100), nullable=False),
-    sa.Column('role', sa.Enum('admin', 'owner', 'blogger', 'poster', 'lurker', name='user_role', native_enum=False, create_constraint=True, length=20), server_default='lurker', nullable=False),
+    sa.Column('role', sa.Enum('admin', 'blogger', 'poster', 'lurker', name='user_role', native_enum=False, create_constraint=True, length=20), server_default='lurker', nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_users')),

@@ -43,7 +43,7 @@ async def test_create_post_reuses_existing_tags(make_post, session):
     assert await count(session, Tag) == 2
 
 
-@pytest.mark.parametrize("role", [UserRole.OWNER, UserRole.ADMIN, UserRole.BLOGGER])
+@pytest.mark.parametrize("role", [UserRole.ADMIN, UserRole.BLOGGER])
 async def test_create_post_allowed_roles(make_post, make_user, role):
     author = await make_user(role)
     post = await make_post(author_id=str(author.id))

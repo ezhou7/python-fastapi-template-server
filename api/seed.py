@@ -9,7 +9,6 @@ from api.db import SessionLocal, engine
 from api.models import Comment, Post, Tag, User, UserRole
 
 USERS = [
-    ("olivia", "Olivia Owner", UserRole.OWNER),
     ("adam", "Adam Admin", UserRole.ADMIN),
     ("bella", "Bella Blogger", UserRole.BLOGGER),
     ("pete", "Pete Poster", UserRole.POSTER),
@@ -19,7 +18,7 @@ USERS = [
 # (author username, title, body, tag names)
 POSTS = [
     (
-        "olivia",
+        "adam",
         "Welcome to the blog",
         "This is the first post. Say hello in the comments!",
         ["welcome"],
