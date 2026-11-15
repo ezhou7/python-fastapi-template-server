@@ -20,7 +20,7 @@ Title = Annotated[str, Field(min_length=1, max_length=200)]
 Body = Annotated[str, Field(min_length=1)]
 
 
-class PostCreate(BaseModel):
+class PostCreateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     author_id: uuid.UUID
@@ -29,7 +29,7 @@ class PostCreate(BaseModel):
     tags: list[TagName] = []
 
 
-class PostUpdate(BaseModel):
+class PostUpdateRequest(BaseModel):
     """PATCH body. Only the fields sent are changed; `tags` replaces the whole set."""
 
     model_config = ConfigDict(extra="forbid")
@@ -39,7 +39,7 @@ class PostUpdate(BaseModel):
     tags: list[TagName] | None = None
 
     @model_validator(mode="after")
-    def reject_explicit_nulls(self) -> "PostUpdate":
+    def reject_explicit_nulls(self) -> "PostUpdateRequest":
         # None means "not sent". Sending null explicitly is an error.
         for name in self.model_fields_set:
             if getattr(self, name) is None:
@@ -47,7 +47,7 @@ class PostUpdate(BaseModel):
         return self
 
 
-class PostRead(BaseModel):
+class PostResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID

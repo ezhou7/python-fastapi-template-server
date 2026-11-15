@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from api.db import get_session
 from api.models import Post, Tag, User, UserRole
-from api.schemas import PostCreate, PostRead, PostUpdate
+from api.routers.schemas import PostCreateRequest, PostResponse, PostUpdateRequest
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -38,7 +38,7 @@ def get_or_create_tags(session: Session, names: list[str]) -> list[Tag]:
     return list(session.scalars(select(Tag).where(Tag.name.in_(names))))
 
 
-@router.get("", response_model=list[PostRead])
+@router.get("", response_model=list[PostResponse])
 def list_posts(
     session: SessionDep,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
@@ -56,13 +56,13 @@ def list_posts(
     return posts.all()
 
 
-@router.get("/{post_id}", response_model=PostRead)
+@router.get("/{post_id}", response_model=PostResponse)
 def get_post(post_id: uuid.UUID, session: SessionDep):
     return get_post_or_404(session, post_id)
 
 
-@router.post("", response_model=PostRead, status_code=status.HTTP_201_CREATED)
-def create_post(payload: PostCreate, session: SessionDep):
+@router.post("", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
+def create_post(payload: PostCreateRequest, session: SessionDep):
     author = session.get(User, payload.author_id)
     if author is None:
         raise HTTPException(
@@ -87,8 +87,8 @@ def create_post(payload: PostCreate, session: SessionDep):
     return post
 
 
-@router.patch("/{post_id}", response_model=PostRead)
-def update_post(post_id: uuid.UUID, payload: PostUpdate, session: SessionDep):
+@router.patch("/{post_id}", response_model=PostResponse)
+def update_post(post_id: uuid.UUID, payload: PostUpdateRequest, session: SessionDep):
     post = get_post_or_404(session, post_id)
     changes = payload.model_dump(exclude_unset=True)
     if not changes:

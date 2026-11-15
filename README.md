@@ -93,13 +93,13 @@ This recreates a separate `app_test` database, migrates it, and runs pytest agai
 
 ```
 api/
-  main.py          FastAPI app
-  config.py        settings
-  db.py            engine and per-request session
-  models.py        SQLAlchemy models (all 5 tables)
-  schemas.py       request / response models for posts
-  routers/posts.py the posts endpoints
-  seed.py          starter data
-migrations/        Alembic migrations
-tests/             pytest suite
+  main.py              FastAPI app
+  config.py            settings
+  db.py                engine and per-request session
+  models.py            SQLAlchemy models (all 5 tables)
+  routers/posts.py     the posts endpoints
+  routers/schemas.py   request and response models for the posts endpoints
+  seed.py              starter data
+migrations/            Alembic migrations
+tests/                 pytest suite
 ```
