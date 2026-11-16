@@ -3,7 +3,7 @@ import uuid
 import pytest
 from sqlalchemy import func, select
 
-from api.models import Comment, Tag, UserRole, tag_post
+from api.models import Comment, Tag, TagPost, UserRole
 
 MISSING_ID = "00000000-0000-0000-0000-000000000000"
 
@@ -156,7 +156,7 @@ def test_patch_replaces_tags(client, make_post, session):
     post = response.json()
     assert post["tags"] == ["python", "rust"]
     assert post["updated_at"] > created["updated_at"]
-    assert count(session, tag_post) == 2
+    assert count(session, TagPost) == 2
     assert count(session, Tag) == 3  # "sql" stays in tags, unlinked
 
 
@@ -203,7 +203,7 @@ def test_delete_post_cascades(client, make_post, make_user, session):
 
     assert client.get(f"/posts/{created['id']}").status_code == 404
     assert count(session, Comment) == 0
-    assert count(session, tag_post) == 0
+    assert count(session, TagPost) == 0
     assert count(session, Tag) == 1  # tags themselves are kept
 
 

@@ -4,7 +4,6 @@ from datetime import datetime
 
 from sqlalchemy import (
     CheckConstraint,
-    Column,
     DateTime,
     Enum,
     ForeignKey,
@@ -13,7 +12,6 @@ from sqlalchemy import (
     MetaData,
     PrimaryKeyConstraint,
     String,
-    Table,
     Text,
     UniqueConstraint,
     func,
@@ -85,22 +83,6 @@ class User(IdTimestampMixin, Base):
     )
 
 
-# Which post has which tag. Rows go away when either side is deleted.
-tag_post = Table(
-    "tag_post",
-    Base.metadata,
-    Column(
-        "post_id", ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True
-    ),
-    Column(
-        "tag_id",
-        ForeignKey("tags.id", ondelete="CASCADE"),
-        primary_key=True,
-        index=True,
-    ),
-)
-
-
 class Tag(IdTimestampMixin, Base):
     __tablename__ = "tags"
 
@@ -116,10 +98,32 @@ class Post(IdTimestampMixin, Base):
     title: Mapped[str] = mapped_column(String(200))
     body: Mapped[str] = mapped_column(Text)
 
+    # The post's tags, found through the tag_post table (TagPost below).
+    # Assigning post.tags adds and removes tag_post rows automatically.
     # Loaded on first access. passive_deletes: when a post is deleted, the
     # database removes its tag_post rows (ON DELETE CASCADE), not the ORM.
     tags: Mapped[list[Tag]] = relationship(
-        secondary=tag_post, order_by=Tag.name, passive_deletes=True
+        secondary="tag_post", order_by=Tag.name, passive_deletes=True
+    )
+
+
+class TagPost(Base):
+    """Which post has which tag: one row per link.
+
+    No id or timestamps of its own; the (post_id, tag_id) pair is the primary key,
+    so a tag can't be linked to the same post twice. Rows go away when either the
+    post or the tag is deleted.
+    """
+
+    __tablename__ = "tag_post"
+
+    post_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True
+    )
+    # Its own index for "posts with this tag". "Tags of this post" already uses
+    # the primary key's index, which starts with post_id.
+    tag_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True, index=True
     )
 
 
