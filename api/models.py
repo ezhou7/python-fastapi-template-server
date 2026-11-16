@@ -3,25 +3,32 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import (
+    CheckConstraint,
     Column,
     DateTime,
     Enum,
     ForeignKey,
+    ForeignKeyConstraint,
+    Index,
     MetaData,
+    PrimaryKeyConstraint,
     String,
     Table,
     Text,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-# Predictable constraint names, so Alembic migrations name things consistently.
+# How constraints and indexes get named, so every database has the same predictable
+# names (a later migration needs the name to change or drop one).
+# %(column_0_N_name)s joins all the columns: idx_posts_author_id_created_at.
 NAMING_CONVENTION = {
-    "ix": "ix_%(column_0_label)s",
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "pk": "pk_%(table_name)s",
+    PrimaryKeyConstraint: "pk_%(table_name)s",
+    ForeignKeyConstraint: "fk_%(table_name)s_%(column_0_N_name)s_%(referred_table_name)s",
+    UniqueConstraint: "uniq_%(table_name)s_%(column_0_N_name)s",
+    CheckConstraint: "ck_%(table_name)s_%(constraint_name)s",
+    Index: "idx_%(table_name)s_%(column_0_N_name)s",
 }
 
 
